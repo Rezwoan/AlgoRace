@@ -1,12 +1,10 @@
-"""Reusable text label component."""
-
+# label.py
 import pygame
 from constants import FONT_NAME, WHITE_COLOR
 
-
+# Label class.
 class Label:
-    """Display-only text element with optional centered alignment."""
-
+    # Initialize label data.
     def __init__(self, x: int, y: int, text: str, color=WHITE_COLOR, font_size: int = 22, centered: bool = False):
         self.x = x
         self.y = y
@@ -15,21 +13,22 @@ class Label:
         self.font_size = font_size
         self.centered = centered
 
+    # Update hook.
     def update(self, mouse_pos) -> None:
-        """No-op update to match common UI component interface."""
         _ = mouse_pos
+        return None
 
+    # Event hook.
     def handle_event(self, event) -> None:
-        """No-op event handler because labels are not interactive."""
         _ = event
         return None
 
+    # Change label text.
     def update_text(self, new_text: str) -> None:
-        """Change the current label text."""
         self.text = new_text
 
+    # Draw label text.
     def draw(self, screen) -> None:
-        """Render text at top-left or centered position."""
         font = pygame.font.SysFont(FONT_NAME, self.font_size)
         text_surface = font.render(self.text, True, self.color)
         text_rectangle = text_surface.get_rect()

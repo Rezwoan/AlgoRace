@@ -1,19 +1,16 @@
-"""Program entrypoint for AlgoRace."""
-
+# main.py
 import pygame
-
 from game import Game
 
-
+# Main entry method.
 def main() -> None:
-    """Initialize pygame, run the game loop, and close cleanly."""
+    # Run game loop.
     pygame.init()
     game = Game()
 
     try:
         game.run()
     finally:
-        # Always release pygame resources, even if runtime errors happen.
         pygame.quit()
 
 
