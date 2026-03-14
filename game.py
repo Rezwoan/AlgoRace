@@ -1,13 +1,12 @@
-"""Core game loop and screen-state handling."""
-
+# game.py
 import pygame
-from constants import FPS, WINDOW_HEIGHT, WINDOW_TITLE, WINDOW_WIDTH
+from constants import WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, FPS
 from screens.menu_screen import MenuScreen
+from screens.editor_screen import EditorScreen
 
-
+# Game class.
 class Game:
-    """Owns pygame resources and controls the active screen."""
-
+    # Initialize game state.
     def __init__(self) -> None:
         self._screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
         self._clock = pygame.time.Clock()
@@ -17,40 +16,42 @@ class Game:
         pygame.display.set_caption(WINDOW_TITLE)
 
         self._menu_screen = MenuScreen()
-        self._menu_state = "MENU"
-        self._editor_state = "EDITOR"
-        self._history_state = "HISTORY"
+        self._editor_screen = EditorScreen()
 
+    # Handle all runtime events.
     def _handle_events(self) -> None:
-        """Process input and pass events to the current screen."""
         mouse_pos = pygame.mouse.get_pos()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self._running = False
 
-            if self._state == self._menu_state:
+            if self._state == "MENU":
                 result = self._menu_screen.handle_event(event)
                 if result == "QUIT":
                     self._running = False
                 elif result:
-                    # Keep this placeholder behavior for now since other screens
-                    # are not fully implemented yet.
-                    if result in (self._editor_state, self._history_state):
-                        pass
+                    self._state = result
 
-        if self._state == self._menu_state:
+            elif self._state == "EDITOR":
+                self._editor_screen.handle_event(event)
+
+        if self._state == "MENU":
             self._menu_screen.update(mouse_pos)
+        elif self._state == "EDITOR":
+            self._editor_screen.update(mouse_pos)
 
+    # Draw active screen.
     def _draw(self) -> None:
-        """Render the active screen once per frame."""
-        if self._state == self._menu_state:
+        if self._state == "MENU":
             self._menu_screen.draw(self._screen)
+        elif self._state == "EDITOR":
+            self._editor_screen.draw(self._screen)
 
         pygame.display.flip()
 
+    # Start game loop.
     def run(self) -> None:
-        """Run the main game loop until the user exits."""
         self._running = True
         while self._running:
             self._handle_events()
